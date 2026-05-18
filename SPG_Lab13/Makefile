@@ -1,0 +1,32 @@
+CXX      = g++
+BREW_PREFIX := $(shell brew --prefix)
+CXXFLAGS = -std=c++14 \
+            -ISPGOpenGL \
+            -ISPGOpenGL/include \
+            -I$(BREW_PREFIX)/include \
+            -DGL_SILENCE_DEPRECATION
+
+LDFLAGS  = -L$(BREW_PREFIX)/lib \
+            -lGLEW -lglfw \
+            -framework OpenGL \
+            -framework Cocoa \
+            -framework IOKit
+
+SRCDIR   = SPGOpenGL
+COMPAT   = freeglut_compat.cpp
+TARGET   = lab13
+
+all: $(TARGET)
+
+$(TARGET): $(SRCDIR)/main.cpp $(COMPAT)
+	$(CXX) $(CXXFLAGS) $(SRCDIR)/main.cpp $(COMPAT) $(LDFLAGS) -o $(TARGET)
+	cp $(SRCDIR)/vertex.vert ./vertex.vert
+	cp $(SRCDIR)/fragment.frag ./fragment.frag
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(TARGET) vertex.vert fragment.frag
+
+.PHONY: all run clean
